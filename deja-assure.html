@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Je suis déjà assuré(e) — Alexis Assurances</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"></noscript>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blue:     #0733A4;
+    --blue-ink: #041c5c;
+    --yellow:   #FFB511;
+    --ink:      #0d1117;
+    --gray-600: #5f6470;
+    --gray-200: #e2e5ec;
+  }
+
+  html, body {
+    min-height: 100%;
+    font-family: 'Manrope', system-ui, sans-serif;
+    background: linear-gradient(135deg, var(--blue-ink) 0%, var(--blue) 100%);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 20px;
+  }
+
+  /* ── Logo ── */
+  .logo-wrap {
+    margin-bottom: 32px;
+    text-align: center;
+  }
+  .logo-wrap img {
+    height: 56px;
+    display: inline-block;
+  }
+
+  /* ── Card ── */
+  .card {
+    background: #fff;
+    color: var(--ink);
+    border-radius: 20px;
+    padding: 40px 36px;
+    width: 100%;
+    max-width: 520px;
+    box-shadow: 0 40px 80px -20px rgba(4,28,92,.5);
+    position: relative;
+  }
+  .card::before {
+    content: "";
+    position: absolute;
+    inset: -16px;
+    background: linear-gradient(135deg, rgba(255,181,17,.2), transparent 60%);
+    filter: blur(40px);
+    z-index: -1;
+    border-radius: 28px;
+  }
+
+  .card-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 12px;
+  }
+  .card-eyebrow span {
+    display: inline-block;
+    width: 20px;
+    height: 2px;
+    background: var(--blue);
+    border-radius: 2px;
+  }
+
+  .card h1 {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -.02em;
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+  .card .sub {
+    font-size: 14px;
+    color: var(--gray-600);
+    margin-bottom: 28px;
+    line-height: 1.55;
+  }
+
+  /* ── Form ── */
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 14px;
+  }
+  .field label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .field input, .field select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 20px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--ink);
+    background: #fff;
+    transition: border-color .15s;
+    outline: none;
+  }
+  .field input:focus, .field select:focus {
+    border-color: var(--blue);
+  }
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .btn-submit {
+    width: 100%;
+    padding: 14px;
+    background: var(--blue);
+    color: #fff;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background .2s, transform .1s;
+    margin-top: 4px;
+  }
+  .btn-submit:hover { background: var(--blue-ink); }
+  .btn-submit:active { transform: scale(.98); }
+  .btn-submit:disabled { opacity: .6; cursor: not-allowed; }
+
+  .form-note {
+    font-size: 11.5px;
+    color: var(--gray-600);
+    text-align: center;
+    margin-top: 12px;
+    line-height: 1.5;
+  }
+
+  /* ── Back link ── */
+  .back {
+    margin-top: 24px;
+    font-size: 13px;
+    color: rgba(255,255,255,.65);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: color .15s;
+  }
+  .back:hover { color: #fff; }
+
+  /* ── Success ── */
+  .success {
+    display: none;
+    text-align: center;
+    padding: 20px 0;
+  }
+  .success-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #eef9f0;
+    color: #10b981;
+    display: grid;
+    place-items: center;
+    margin: 0 auto 16px;
+  }
+  .success h2 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
+  .success p  { font-size: 14px; color: var(--gray-600); line-height: 1.6; }
+
+  @media(max-width:480px) {
+    .card { padding: 28px 20px; }
+    .field-row { grid-template-columns: 1fr; }
+    .card h1 { font-size: 19px; }
+  }
+</style>
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WCH7LDM6"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<div class="card">
+  <div class="card-eyebrow"><span></span> Déjà assuré(e)</div>
+  <h1>Vous méritez mieux que votre contrat actuel.</h1>
+  <p class="sub">Partagez vos informations, un expert analyse votre situation et vous propose une meilleure offre sous 24h.</p>
+
+  <form id="dejaAssureForm">
+    <div class="field-row">
+      <div class="field">
+        <label>Nom</label>
+        <input required type="text" name="nom" placeholder="Durand">
+      </div>
+      <div class="field">
+        <label>Prénom</label>
+        <input required type="text" name="prenom" placeholder="Thomas">
+      </div>
+    </div>
+    <div class="field">
+      <label>Nom d'entreprise</label>
+      <input required type="text" name="entreprise" placeholder="SolarPro SARL">
+    </div>
+    <div class="field">
+      <label>N° SIRET <span style="font-weight:400;font-size:11px;color:var(--gray-600)">(Si vous en disposez d'un)</span></label>
+      <input type="text" name="siret" placeholder="XXX XXX XXX XXXXX">
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>Téléphone</label>
+        <input required type="tel" name="telephone" placeholder="06 XX XX XX XX">
+      </div>
+      <div class="field">
+        <label>Mail</label>
+        <input required type="email" name="email" placeholder="vous@entreprise.fr">
+      </div>
+    </div>
+    <div class="field">
+      <label>Compagnie actuelle</label>
+      <input required type="text" name="compagnie" placeholder="Ex : Allianz, AXA, Groupama…">
+    </div>
+
+    <button type="submit" class="btn-submit">Être recontacté(e) sous 24h →</button>
+    <p class="form-note">Aucune revente de données. Alexis Assurances — ORIAS n°18001240.</p>
+  </form>
+
+  <div class="success" id="successMsg">
+    <div class="success-icon">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+    </div>
+    <h2>Demande envoyée !</h2>
+    <p>Un expert vous recontacte sous 24h ouvrées avec une analyse de votre situation.</p>
+  </div>
+</div>
+
+<a class="back" href="index.html">
+  ← Retour à l'accueil
+</a>
+
+<script>
+(function() {
+  var WEBHOOK = 'https://hook.eu1.make.com/5f1lw9yp8kms4buapd45y3kjnwnd2b1f';
+
+  document.getElementById('dejaAssureForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var f = this;
+    var btn = f.querySelector('[type="submit"]');
+    btn.disabled = true;
+    btn.textContent = 'Envoi en cours…';
+
+    var data = {
+      nom:       f.nom.value,
+      prenom:    f.prenom.value,
+      entreprise:f.entreprise.value,
+      siret:     f.siret.value,
+      telephone: f.telephone.value,
+      email:     f.email.value,
+      compagnie: f.compagnie.value,
+      date:      new Date().toLocaleString('fr-FR'),
+      source:    'Landing Page PV — Déjà assuré'
+    };
+
+    fetch(WEBHOOK, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    })
+    .then(function() {
+      f.style.display = 'none';
+      document.getElementById('successMsg').style.display = 'block';
+    })
+    .catch(function() {
+      alert('Une erreur est survenue. Veuillez réessayer ou nous appeler directement.');
+      btn.disabled = false;
+      btn.textContent = 'Être recontacté(e) sous 24h →';
+    });
+  });
+})();
+</script>
+</body>
+</html>
