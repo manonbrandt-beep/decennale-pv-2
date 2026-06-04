@@ -446,6 +446,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <input type="hidden" name="camp"     data-track-field="camp">
         <input type="hidden" name="ga"       data-track-field="ga">
         <input type="hidden" name="ann"      data-track-field="ann">
+        <input type="hidden" name="utm_camp" data-track-field="utm_camp">
+        <input type="hidden" name="utm_term" data-track-field="utm_term">
+        <input type="hidden" name="utm_ga"   data-track-field="utm_ga">
+        <input type="hidden" name="utm_kw"   data-track-field="utm_kw">
+        <input type="hidden" name="time"     data-track-field="time">
         <button type="submit" class="form-submit">Devis sous 24h →</button>
         <p class="form-note">En envoyant ce formulaire, vous acceptez d'être recontacté(e) par Alexis Assurances. Aucune revente de données.</p>
       </form>
@@ -800,6 +805,11 @@ Je recommande fortement ! »</blockquote>
         <input type="hidden" name="camp"     data-track-field="camp">
         <input type="hidden" name="ga"       data-track-field="ga">
         <input type="hidden" name="ann"      data-track-field="ann">
+        <input type="hidden" name="utm_camp" data-track-field="utm_camp">
+        <input type="hidden" name="utm_term" data-track-field="utm_term">
+        <input type="hidden" name="utm_ga"   data-track-field="utm_ga">
+        <input type="hidden" name="utm_kw"   data-track-field="utm_kw">
+        <input type="hidden" name="time"     data-track-field="time">
         <button type="submit" class="form-submit">Devis sous 24h →</button>
         <p class="form-note">En envoyant ce formulaire, vous acceptez d'être recontacté(e) par Alexis Assurances. Aucune revente de données.</p>
       </form>
@@ -963,7 +973,7 @@ applyState();
 
 <script>
 (function(){
-  var FIELDS = ['gclid','order_id','kw','camp','ga','ann'];
+  var FIELDS = ['gclid','order_id','kw','camp','ga','ann','utm_camp','utm_term','utm_ga','utm_kw'];
   var params = new URLSearchParams(window.location.search);
 
   // Lire depuis l'URL et stocker en localStorage
@@ -981,10 +991,19 @@ applyState();
     });
   }
 
+  function fillTimeField() {
+    var now = new Date();
+    var pad = function(n){ return n.toString().padStart(2,'0'); };
+    var ts = now.getFullYear() + '-' + pad(now.getMonth()+1) + '-' + pad(now.getDate())
+           + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
+    document.querySelectorAll('[data-track-field="time"]').forEach(function(el){ el.value = ts; });
+  }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', fillTrackingFields);
+    document.addEventListener('DOMContentLoaded', function(){ fillTrackingFields(); fillTimeField(); });
   } else {
     fillTrackingFields();
+    fillTimeField();
   }
 })();
 </script>
@@ -1042,6 +1061,11 @@ applyState();
         camp:       f.camp ? f.camp.value : '',
         ga:         f.ga ? f.ga.value : '',
         ann:        f.ann ? f.ann.value : '',
+        utm_camp:   f.utm_camp ? f.utm_camp.value : '',
+        utm_term:   f.utm_term ? f.utm_term.value : '',
+        utm_ga:     f.utm_ga ? f.utm_ga.value : '',
+        utm_kw:     f.utm_kw ? f.utm_kw.value : '',
+        time:       f.time ? f.time.value : '',
         date:       new Date().toLocaleString('fr-FR'),
         source:     'Landing Page PV'
       };
