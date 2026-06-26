@@ -498,6 +498,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <input type="hidden" name="utm_ga"   data-track-field="utm_ga">
         <input type="hidden" name="utm_kw"   data-track-field="utm_kw">
         <input type="hidden" name="time"     data-track-field="time">
+        <input type="hidden" name="profil"   data-track-field="profil">
         <button type="submit" class="form-submit">Devis sous 24h →</button>
         <p class="form-note">En envoyant ce formulaire, vous acceptez d'être recontacté(e) par Alexis Assurances. Aucune revente de données.</p>
       </form>
@@ -857,6 +858,7 @@ Je recommande fortement ! »</blockquote>
         <input type="hidden" name="utm_ga"   data-track-field="utm_ga">
         <input type="hidden" name="utm_kw"   data-track-field="utm_kw">
         <input type="hidden" name="time"     data-track-field="time">
+        <input type="hidden" name="profil"   data-track-field="profil">
         <button type="submit" class="form-submit">Devis sous 24h →</button>
         <p class="form-note">En envoyant ce formulaire, vous acceptez d'être recontacté(e) par Alexis Assurances. Aucune revente de données.</p>
       </form>
@@ -1038,6 +1040,10 @@ applyState();
     });
   }
 
+  function fillProfilField() {
+    var profil = sessionStorage.getItem('profilVisiteur') || '';
+    document.querySelectorAll('[data-track-field="profil"]').forEach(function(el){ el.value = profil; });
+  }
   function fillTimeField() {
     var now = new Date();
     var pad = function(n){ return n.toString().padStart(2,'0'); };
@@ -1047,10 +1053,11 @@ applyState();
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function(){ fillTrackingFields(); fillTimeField(); });
+    document.addEventListener('DOMContentLoaded', function(){ fillTrackingFields(); fillTimeField(); fillProfilField(); });
   } else {
     fillTrackingFields();
     fillTimeField();
+    fillProfilField();
   }
 })();
 </script>
@@ -1113,6 +1120,7 @@ applyState();
         utm_ga:     f.utm_ga ? f.utm_ga.value : '',
         utm_kw:     f.utm_kw ? f.utm_kw.value : '',
         time:       f.time ? f.time.value : '',
+        profil:     f.profil ? f.profil.value : '',
         date:       new Date().toLocaleString('fr-FR'),
         source:     'Landing Page PV'
       };
@@ -1164,12 +1172,16 @@ applyState();
 </div>
 
 <script>
+window.dataLayer = window.dataLayer || [];
 (function(){
   // Afficher le popup après 2 secondes (une seule fois par session)
   if (!sessionStorage.getItem('popupShown')) {
     setTimeout(function(){
       var p = document.getElementById('profilPopup');
-      if(p){ p.style.display = 'flex'; }
+      if(p){
+        p.style.display = 'flex';
+        window.dataLayer.push({ event: 'popup_profil_affiche' });
+      }
     }, 2000);
   }
 })();
@@ -1181,6 +1193,15 @@ function closeProfilPopup(profil) {
   setTimeout(function(){ p.style.display = 'none'; p.style.opacity = ''; }, 250);
   sessionStorage.setItem('popupShown', '1');
   sessionStorage.setItem('profilVisiteur', profil);
+
+  // Envoi de l'événement à Google Tag Manager / Analytics
+  window.dataLayer.push({
+    event: 'popup_profil_choix',
+    profil_visiteur: profil
+  });
+
+  // Remplir les champs cachés "profil" des formulaires (s'ils existent)
+  document.querySelectorAll('[data-track-field="profil"]').forEach(function(el){ el.value = profil; });
 }
 </script>
 </body></html>
