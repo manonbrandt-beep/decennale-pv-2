@@ -1202,6 +1202,21 @@ function closeProfilPopup(profil) {
 
   // Remplir les champs cachés "profil" des formulaires (s'ils existent)
   document.querySelectorAll('[data-track-field="profil"]').forEach(function(el){ el.value = profil; });
+
+  // Envoi immédiat du clic popup vers Make (indépendant du formulaire)
+  fetch('https://hook.eu1.make.com/onqyh5ccdkg1rqmzaudnkh8xkhrvdlzo', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      profil:  profil,
+      date:    new Date().toLocaleString('fr-FR'),
+      source:  'Popup - Clic Profil',
+      url:     window.location.href,
+      gclid:   new URLSearchParams(window.location.search).get('gclid') || '',
+      utm_camp: new URLSearchParams(window.location.search).get('utm_camp') || '',
+      utm_term: new URLSearchParams(window.location.search).get('utm_term') || ''
+    })
+  }).catch(function(){});
 }
 </script>
 </body></html>
