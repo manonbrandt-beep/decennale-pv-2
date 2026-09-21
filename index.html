@@ -114,6 +114,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .field label{font-size:12px;font-weight:600;color:var(--gray-800);letter-spacing:.02em}
   .field input,.field select,.field textarea{font-family:inherit;font-size:14px;padding:12px 14px;border:1px solid var(--gray-200);border-radius:10px;background:#fff;color:var(--ink);transition:border-color .15s, box-shadow .15s}
   .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(7,51,164,.12)}
+  .field-hint{font-size:11.5px;color:var(--gray-600);line-height:1.4}
+  .field-hint a{color:var(--blue);text-decoration:underline}
   .field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   @media(max-width:520px){.field-row{grid-template-columns:1fr}}
   .form-submit{width:100%;margin-top:8px;padding:14px;background:var(--blue);color:#fff;border:none;border-radius:10px;font-weight:700;font-size:15px;transition:all .15s}
@@ -390,7 +392,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <h3>Votre entreprise</h3>
           <p class="muted">Pour identifier rapidement votre profil d'installateur.</p>
           <div class="field"><label>Nom d'entreprise</label><input required type="text" name="entreprise" placeholder="SolarPro SARL"></div>
-          <div class="field"><label>N° SIRET <span style="font-weight:400;font-size:12px;color:var(--gray-600)">(Si vous en disposez d'un)</span></label><input type="text" name="siret" placeholder="XXX XXX XXX XXXXX"></div>
+          <div class="field"><label>N° SIRET <span style="font-weight:400;font-size:12px;color:var(--gray-600)">(14 chiffres)</span></label><input required type="text" name="siret" id="siretInput" inputmode="numeric" autocomplete="off" maxlength="17" placeholder="XXX XXX XXX XXXXX"><span class="field-hint">Indiqué sur votre Kbis. Vous ne le retrouvez pas&nbsp;? <a href="https://annuaire-entreprises.data.gouv.fr" target="_blank" rel="noopener">Cherchez votre entreprise ici</a>.</span></div>
         </div>
         <div class="q-step" data-step="1" hidden>
           <h3>Votre contrat actuel</h3>
@@ -857,6 +859,32 @@ applyState();
   backBtn.addEventListener('click', function(){
     if (current > 0) { current--; render(); }
   });
+
+  // SIRET : obligatoire, 14 chiffres + clé de contrôle (algorithme de Luhn)
+  var siret = document.getElementById('siretInput');
+  function siretValide(d) {
+    if (!/^\d{14}$/.test(d) || /^0+$/.test(d)) return false;
+    var sum = 0, digitSum = 0;
+    for (var i = 0; i < 14; i++) {
+      var n = +d[i];
+      digitSum += n;
+      if (i % 2 === 0) { n *= 2; if (n > 9) n -= 9; }
+      sum += n;
+    }
+    if (sum % 10 === 0) return true;
+    return d.indexOf('356000000') === 0 && digitSum % 5 === 0;
+  }
+  function checkSiret() {
+    var d = siret.value.replace(/\D/g, '').slice(0, 14);
+    var formatted = [d.slice(0, 3), d.slice(3, 6), d.slice(6, 9), d.slice(9)].filter(Boolean).join(' ');
+    if (siret.value !== formatted) siret.value = formatted;
+    if (!d) siret.setCustomValidity('');
+    else if (d.length < 14) siret.setCustomValidity('Le numéro de SIRET doit comporter 14 chiffres.');
+    else if (!siretValide(d)) siret.setCustomValidity('Ce numéro de SIRET n\'est pas valide. Vérifiez votre saisie.');
+    else siret.setCustomValidity('');
+  }
+  siret.addEventListener('input', checkSiret);
+  siret.addEventListener('change', checkSiret);
 
   render();
 })();
