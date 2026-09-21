@@ -392,7 +392,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <h3>Votre entreprise</h3>
           <p class="muted">Pour identifier rapidement votre profil d'installateur.</p>
           <div class="field"><label>Nom d'entreprise</label><input required type="text" name="entreprise" placeholder="SolarPro SARL"></div>
-          <div class="field"><label>N° SIRET <span style="font-weight:400;font-size:12px;color:var(--gray-600)">(14 chiffres)</span></label><input required type="text" name="siret" id="siretInput" inputmode="numeric" autocomplete="off" maxlength="17" placeholder="XXX XXX XXX XXXXX"><span class="field-hint">Indiqué sur votre Kbis. Vous ne le retrouvez pas&nbsp;? <a href="https://annuaire-entreprises.data.gouv.fr" target="_blank" rel="noopener">Cherchez votre entreprise ici</a>.</span></div>
+          <div class="field"><label>N° SIRET <span style="font-weight:400;font-size:12px;color:var(--gray-600)">(optionnel)</span></label><input type="text" name="siret" id="siretInput" inputmode="numeric" autocomplete="off" maxlength="17" placeholder="XXX XXX XXX XXXXX"><span class="field-hint">Indiqué sur votre Kbis. Vous ne le retrouvez pas&nbsp;? <a href="https://annuaire-entreprises.data.gouv.fr" target="_blank" rel="noopener">Cherchez votre entreprise ici</a>.</span></div>
         </div>
         <div class="q-step" data-step="1" hidden>
           <h3>Votre contrat actuel</h3>
@@ -408,7 +408,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <div class="field"><label>Prénom</label><input required type="text" name="prenom" placeholder="Thomas"></div>
           </div>
           <div class="field-row">
-            <div class="field"><label>Téléphone</label><input required type="tel" name="telephone" placeholder="06 XX XX XX XX"></div>
+            <div class="field"><label>Téléphone</label><input required type="tel" name="telephone" id="telInput" inputmode="tel" autocomplete="tel" maxlength="25" placeholder="06 XX XX XX XX"></div>
             <div class="field"><label>Mail</label><input required type="email" name="email" placeholder="vous@entreprise.fr"></div>
           </div>
         </div>
@@ -885,6 +885,39 @@ applyState();
   }
   siret.addEventListener('input', checkSiret);
   siret.addEventListener('change', checkSiret);
+
+  // Téléphone : obligatoire, numéro français réel (01-07, 09), saisie nationale ou +33 / 0033
+  var tel = document.getElementById('telInput');
+  function telValide(n) {
+    if (!/^0[1-79]\d{8}$/.test(n)) return false;
+    var body = n.slice(2);
+    if (/^(\d)\1+$/.test(body)) return false;
+    if ('01234567890123456789'.indexOf(body) >= 0 || '98765432109876543210'.indexOf(body) >= 0) return false;
+    return true;
+  }
+  function checkTel() {
+    var raw = tel.value.trim();
+    var digits = raw.replace(/\D/g, '');
+    var national;
+    if (/^(\+|00)/.test(raw)) {
+      if (!/^(\+|00)33/.test(raw)) {
+        tel.setCustomValidity('Merci de saisir un numéro de téléphone français (ex : 06 45 78 12 30).');
+        return;
+      }
+      var rest = digits.replace(/^(00)?33/, '');
+      national = (rest.charAt(0) === '0' ? rest : '0' + rest).slice(0, 10);
+    } else {
+      national = digits.slice(0, 10);
+    }
+    var formatted = national.replace(/(\d{2})(?=\d)/g, '$1 ');
+    if (tel.value !== formatted) tel.value = formatted;
+    if (!national) tel.setCustomValidity('');
+    else if (national.length < 10) tel.setCustomValidity('Le numéro doit comporter 10 chiffres (ex : 06 45 78 12 30).');
+    else if (!telValide(national)) tel.setCustomValidity('Merci de saisir un numéro de téléphone français valide (ex : 06 45 78 12 30).');
+    else tel.setCustomValidity('');
+  }
+  tel.addEventListener('input', checkTel);
+  tel.addEventListener('change', checkTel);
 
   render();
 })();
